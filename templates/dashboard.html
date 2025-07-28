@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Employee Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'js/dashboard.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Django Employee Management</h1>
+            <p>Example of Dashboard and Analytics</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalEmployees">{{ total_employees }}</div>
+                <div class="stat-label">Total Employees</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="recentJoiners">{{ recent_employees }}</div>
+                <div class="stat-label">Recent Joiners</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalDepartments">{{ total_departments }}</div>
+                <div class="stat-label">Departments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avgAttendance">-</div>
+                <div class="stat-label">Avg Attendance</div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-container">
+                <div class="chart-title">Employees by Department</div>
+                <div class="chart">
+                    <canvas id="departmentChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Performance Distribution</div>
+                <div class="chart">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Daily Attendance (Last 7 Days)</div>
+                <div class="chart">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Attendance Status Distribution</div>
+                <div class="chart">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="api-info">
+            <h3>API Documentation & Authentication</h3>
+            <p>The API endpoints require authentication</p>
+            <a href="/swagger/" class="api-link" target="_blank">Swagger APIs</a>
+            <a href="/admin/" class="api-link" target="_blank">Django Admin Panel</a>
+            <a href="/redoc/" class="api-link" target="_blank">API ReDoc</a>
+            <a href="/api/v1/employees/" class="api-link" target="_blank">Django Employees API</a>
+            <a href="/api/v1/attendances/" class="api-link" target="_blank">Django Attendance API</a>
+            <a href="/api/v1/departments/" class="api-link" target="_blank">Django Departments API</a>
+        </div>
+    </div>
+
+</body>
+
+</html>
