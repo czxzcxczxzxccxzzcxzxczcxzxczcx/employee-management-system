@@ -45,6 +45,9 @@ class AttendanceDetailView(generics.RetrieveUpdateDestroyAPIView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def attendance_analytics(request):
+    from datetime import datetime, timedelta
+    from django.db.models import Count
+
     # Get date range from query params
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
@@ -74,14 +77,36 @@ def attendance_analytics(request):
         status='present'
     ).values('date').annotate(count=Count('id')).order_by('date')
     
+
+    status_distribution = Attendance.objects.filter(
+        date__range=[start_date, end_date]
+    ).values('status').annotate(
+        count=Count('id')
+    ).order_by('status')
+    
+    # Attendance rate 
+    total_possible = Employee.objects.filter(is_active=True).count() * (end_date - start_date).days
+    total_present = Attendance.objects.filter(
+        date__range=[start_date, end_date],
+        status__in=['present', 'late']
+    ).count()
+    
+    attendance_rate = (total_present / total_possible * 100) if total_possible > 0 else 0
+
+
     return Response({
-        'date_range': {
-            'start_date': start_date,
-            'end_date': end_date
-        },
-        'total_records': total_records,
+        'daily_attendance': [
+            {
+                'date': item['date'].strftime('%Y-%m-%d'),
+                'count': item['count']
+            } for item in daily_attendance
+        ],
         'status_distribution': list(status_distribution),
-        'daily_attendance': list(daily_attendance),
+        'attendance_rate': round(attendance_rate, 1),
+        'date_range': {
+            'start_date': start_date.strftime('%Y-%m-%d'),
+            'end_date': end_date.strftime('%Y-%m-%d')
+        }
     })
 
 # Gets attendance statistics for a specific employee

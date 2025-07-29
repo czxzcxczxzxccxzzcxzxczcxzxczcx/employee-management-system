@@ -96,31 +96,57 @@ class PerformanceDetailView(generics.RetrieveUpdateDestroyAPIView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def employee_analytics(request):
-    # Employee count
+    """Get employee analytics data"""
+    from attendance.models import Attendance
+    from django.db.models import Count, Q
+    from datetime import datetime, timedelta
+    
+    # Get date range from query params
     dept_data = Department.objects.annotate(
-        employee_count=Count('employees', filter=Q(employees__is_active=True))
+        employee_count=Count('employees')
     ).values('name', 'employee_count')
-    
-    # Total employees
+
+    # Get total and recent employee counts
     total_employees = Employee.objects.filter(is_active=True).count()
-    
-    # Recent joiners (last 30 days)
-    thirty_days_ago = timezone.now().date() - timedelta(days=30)
-    recent_joiners = Employee.objects.filter(
-        date_joined__gte=thirty_days_ago,
+    recent_employees = Employee.objects.filter(
+        date_joined__gte=datetime.now() - timedelta(days=30),
         is_active=True
     ).count()
     
-    # Performance distribution
-    performance_dist = Performance.objects.values('rating').annotate(
+    perf_data = Performance.objects.values('rating').annotate(
         count=Count('rating')
     ).order_by('rating')
     
+    # Get daily attendance from the last 7 days
+    end_date = datetime.now().date()
+    start_date = end_date - timedelta(days=7)
+    
+    daily_attendance = Attendance.objects.filter(
+        date__range=[start_date, end_date],
+        status='present'
+    ).values('date').annotate(
+        count=Count('id')
+    ).order_by('date')
+    
+    # Get status distribution from the last 7 days 
+    status_distribution = Attendance.objects.filter(
+        date__range=[start_date, end_date]
+    ).values('status').annotate(
+        count=Count('id')
+    ).order_by('status')
+    
     return Response({
         'total_employees': total_employees,
-        'recent_joiners': recent_joiners,
+        'recent_joiners': recent_employees,
         'department_distribution': list(dept_data),
-        'performance_distribution': list(performance_dist),
+        'performance_distribution': list(perf_data),
+        'daily_attendance': [
+            {
+                'date': item['date'].strftime('%Y-%m-%d'),
+                'count': item['count']
+            } for item in daily_attendance
+        ],
+        'status_distribution': list(status_distribution),
     })
 
 
