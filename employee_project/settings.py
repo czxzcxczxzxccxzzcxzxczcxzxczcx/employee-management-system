@@ -173,6 +173,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://127.0.0.1:8000",
     "https://localhost:8001",
     "https://127.0.0.1:8001",
+    "https://employee-management-system-x2ef.onrender.com",
 ]
 
 # Allow all origins during development 
@@ -202,6 +203,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://127.0.0.1:8000",
     "https://localhost:8001",
     "https://127.0.0.1:8001",
+    "https://employee-management-system-x2ef.onrender.com",
 ]
 
 # Swagger settings
