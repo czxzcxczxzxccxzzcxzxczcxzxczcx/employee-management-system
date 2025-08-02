@@ -125,8 +125,8 @@ async function loadAttendanceChart() {
         const response = await fetch(`${API_BASE}/analytics/`);
         
         if (!response.ok) {
-            console.log('Analytics failed, creating demo data');
-            createAttendanceChartWithDemoData();
+            // console.log('Analytics failed, creating demo data');
+            // createAttendanceChartWithDemoData();
             return;
         }
         
@@ -135,8 +135,8 @@ async function loadAttendanceChart() {
         
         // If no daily attendance data, create demo data
         if (dailyData.length === 0) {
-            console.log('No daily attendance data, creating demo data');
-            createAttendanceChartWithDemoData();
+            // console.log('No daily attendance data, creating demo data');
+            // createAttendanceChartWithDemoData();
             return;
         }
         
@@ -207,7 +207,7 @@ async function loadStatusChart() {
         const response = await fetch(`${API_BASE}/analytics/`);
         
         if (!response.ok) {
-            console.log('Analytics failed, creating demo data');
+            // console.log('Analytics failed, creating demo data');
             // createDemoStatusChart();
             return;
         }
@@ -217,7 +217,7 @@ async function loadStatusChart() {
         
         // If no status data, create demo data
         if (statusData.length === 0) {
-            console.log('No status data, creating demo data');
+            // console.log('No status data, creating demo data');
             // createDemoStatusChart();
             return;
         }
@@ -272,20 +272,28 @@ function showAuthenticationMessage() {
     document.getElementById('avgAttendance').textContent = 'Auth Required';
     
     const authMessage = document.createElement('div');
+
     authMessage.style.cssText = `
         background: #fff3cd; 
         color: #856404; 
-        padding: 20px; 
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0px 600px; 
         margin: 20px 0; 
         border-radius: 8px; 
         text-align: center;
-        border: 1px solid #ffeaa7;
+        border: 1px solid #ffeaa7e7;
     `;
     authMessage.innerHTML = `
-        <h3>Auth Required</h3>
-        <p>The dashboard requires API authentication to display data.</p>
+        <h3 style=" width: 500px;">Auth Required</h3>
+        <p style=" width: 500px;">The dashboard requires API authentication to display data.</p>
+        <p style=" width: 500px;">You can access the api by logging into the admin page, or on the auth api with the Swagger UI</p>
     `;
     
+
+
     document.querySelector('.stats-grid').appendChild(authMessage);
 }
 
